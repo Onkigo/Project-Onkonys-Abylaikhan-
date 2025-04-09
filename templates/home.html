@@ -2,6 +2,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Home{% endblock %}
+
 {% block content %}
 
 
@@ -19,10 +21,27 @@
 <a class="twitter" href="#"><i class="bi bi-twitter"></i></a>
 <a class="instagram" href="#"><i class="bi bi-instagram"></i></a>
 </div>
-<form class="search-form ms-4">
-<input class="form-control" placeholder="Search..." type="text"/>
-<button class="btn" type="submit"><i class="bi bi-search"></i></button>
+<form method="get" action="" class="d-flex align-items-center gap-2" style="margin-bottom: 0;">
+  <!-- Поиск -->
+  <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Search..." class="form-control" style="width: 180px; border-radius: 0px !important;">
+
+  <!-- Категория -->
+  <select name="category" class="form-control" style="width: 180px; border-radius: 0px !important;">
+    <option value="">Choose Category</option>
+    {% for category in categories %}
+      <option value="{{ category.name }}" {% if selected_category == category.name %}selected{% endif %}>
+        {{ category.name }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <!-- Дата -->
+  <input type="month" name="date" class="form-control" value="{{ selected_date }}" style="border-radius: 0px !important;">
+
+  <!-- Кнопка -->
+  <button type="submit" class="btn btn-outline-dark" style="border-radius: 0px !important;">Search / Filter</button>
 </form>
+
 </div>
 </div>
 </div>
@@ -32,7 +51,19 @@
 <ul>
 <li><a href="index.html">Home</a></li>
 <li><a href="about.html">About</a></li>
-<li><a href="category.html">Category</a></li>
+<li class="dropdown">
+  <a href="#"><span>Categories</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+  <ul>
+    {% for category in categories %}
+      <li>
+        <a href="{% url 'category_articles' category.id %}">
+          {{ category.name }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</li>
+
 <li><a href="blog-details.html">Blog Details</a></li>
 <li><a href="author-profile.html">Author Profile</a></li>
 <li class="dropdown"><a href="#"><span>Pages</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
@@ -61,8 +92,11 @@
 </div>
 </div>
 </header>
+
+
 <main class="main">
 <!-- Page Title -->
+ 
 <div class="page-title">
 <div class="breadcrumbs">
 <nav aria-label="breadcrumb">
@@ -92,12 +126,19 @@
 <div class="col-lg-4">
 <article>
 <div class="post-img">
-<img alt="" class="img-fluid" src="{% static 'img/blog/blog-post-1.webp' %}"/>
+  {% if article.image %}
+  <img src="{{ article.image.url }}" alt="{{ article.title }}" class="img-fluid">
+{% else %}
+  <img src="{% static 'img/blog/blog-post-1.webp' %}" alt="default image" class="img-fluid">
+{% endif %}
+
 </div>
 <p class="post-category">Category</p>
 <h2 class="title">
-<a href="#">{{ article.title }}</a>
+  <a href="{% url 'article_detail' article.id %}">{{ article.title }}</a>
 </h2>
+
+
 <div class="d-flex align-items-center">
 <img alt="" class="img-fluid post-author-img flex-shrink-0" src="{% static 'img/person/person-m-11.webp' %}"/>
 <div class="post-meta">
@@ -106,6 +147,8 @@
 <time datetime="{{ article.pub_date|date:'Y-m-d' }}">{{ article.pub_date|date:"M d, Y" }}</time>
 </p>
 </div>
+
+
 </div>
 </article>
 </div>
@@ -165,6 +208,16 @@
 </div>
 <div class="col-lg-2 col-md-3 footer-links">
 <h4>Our Services</h4>
+<div class="col-lg-2 col-md-3 footer-links">
+  <h4>Категории</h4>
+  <ul>
+    {% for cat in categories %}
+    <a href="{% url 'category_articles' cat.id %}">
+
+    {% endfor %}
+  </ul>
+</div>
+
 <ul>
 <li><a href="#">Web Design</a></li>
 <li><a href="#">Web Development</a></li>
