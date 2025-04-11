@@ -15,7 +15,7 @@ from datetime import datetime
 def home_view(request):
     # Получаем все статьи
     articles = Article.objects.all()
-
+    
     # Получаем параметры из GET-запроса
     query = request.GET.get('q')
     category = request.GET.get('category')
@@ -46,6 +46,7 @@ def home_view(request):
         'selected_category': category,
         'selected_date': date,
         'categories': categories,
+        
     }
 
     return render(request, 'home.html', context)
@@ -75,23 +76,22 @@ def edit_article(request, id):
 
 def article_detail(request, id):
     article = get_object_or_404(Article, id=id)
+    form = CommentForm(request.POST or None)
     comments = article.comments.all().order_by('-created_at')
+    if request.method == "POST" and form.is_valid():
+        comment = form.save(commit=False)
+        comment.article = article
+        comment.save()
+        return redirect('article_detail', id=article.id)
 
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.article = article
-            comment.save()
-            return redirect('article_detail', id=article.id)
-    else:
-        form = CommentForm()
+    
 
     return render(request, 'article_detail.html', {
         'article': article,
-        'comments': comments,
-        'form': form
+        'form': form,
+        'comments': comments  # ← передаём комментарии в шаблон
     })
+
     
 def register_view(request):
     if request.method == 'POST':

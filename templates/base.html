@@ -1,64 +1,53 @@
-<!DOCTYPE html>
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Blogy{% endblock %}</title>
-
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-
-  <!-- Favicons -->
-  <link href="{% static 'img/favicon.png' %}" rel="icon">
-  <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com" rel="preconnect">
-  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-
-  <!-- Vendor CSS Files -->
+  <link href="{% static 'css/main.css' %}" rel="stylesheet">
   <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
   <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
-  <link href="{% static 'vendor/aos/aos.css' %}" rel="stylesheet">
-  <link href="{% static 'vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
-  <link href="{% static 'vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <!-- AOS Animation CSS -->
+<link href="{% static 'vendor/aos/aos.css' %}" rel="stylesheet">
 
-  <!-- Main CSS File -->
-  <link href="{% static 'css/main.css' %}" rel="stylesheet">
-
-  <!-- =======================================================
-  * Template Name: Blogy
-  * Template URL: https://bootstrapmade.com/blogy-bootstrap-blog-template/
-  * Updated: Feb 22 2025 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
+<body>
 
-<body class="search-results-page">
-  {% if user.is_authenticated %}
-  <div class="text-end mb-4">
-    
-  </div>
-{% endif %}
-<div class="container mt-3 d-flex justify-content-end gap-2">
-    {% if user.is_authenticated %}
-    <a href="{% url 'create_article' %}" class="btn create-btn"> Create article</a>
-    <a href="{% url 'logout' %}" class="btn close-btn"> Logout</a>
-    
-    {% else %}
-    <a href="{% url 'login' %}" class="btn login-btn"> Login</a>
-    <a href="{% url 'register' %}" class="btn register-btn"> Register</a>
-    
-    {% endif %}
-  </div>
+  <!-- Header -->
+  <div class="container mt-3 d-flex justify-content-end gap-3">
+        {% if user.is_authenticated %}
+          <a href="{% url 'create_article' %}" class="create-link">Create article</a>
+          <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+        
+        {% else %}
+          <a href="{% url 'login' %}" class="btn btn-outline-success">Login</a>
+          <a href="{% url 'register' %}" class="btn btn-outline-secondary">Register</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <!-- Контент -->
+  <main class="container mb-5">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <!-- Vendor JS Files -->
+<script src="{% static 'vendor/aos/aos.js' %}"></script>
+
+<!-- Init AOS -->
+<script>
+  AOS.init({
+    duration: 800,
+    easing: 'ease-in-out',
+    once: true,
+    mirror: false
+  });
+</script>
+
   
-    
-  
-{% block content %}{% endblock %}
+
 </body>
-
 </html>

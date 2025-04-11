@@ -1,12 +1,55 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load widget_tweaks %}
 {% block content %}
-<div class="container mt-5">
-  <h2>Создать / Редактировать статью</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary mt-3">Сохранить</button>
-  </form>
+<div class="container mt-4">
+  <a href="{% url 'home' %}" class="text-decoration-none d-inline-flex align-items-center mb-3" style="color: #555;">
+    <i class="bi bi-arrow-left-circle me-2" style="font-size: 1.2rem;"></i> Back to Home
+  </a>
 </div>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+
+        <div class="text-center mb-4">
+          <h2 class="fw-bold">Create Article</h2>
+          <p class="text-muted">Fill out the form below to publish your article on the platform.</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="p-4 border rounded shadow-sm bg-white">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label for="id_title" class="form-label">Title</label>
+            {{ form.title|add_class:"form-control" }}
+          </div>
+
+          <div class="mb-3">
+            <label for="id_content" class="form-label">Content</label>
+            {{ form.content|add_class:"form-control" }}
+          </div>
+
+          <div class="mb-3">
+            <label for="id_image" class="form-label">Image</label>
+            {{ form.image|add_class:"form-control" }}
+          </div>
+
+          <div class="mb-4">
+            <label for="id_category" class="form-label">Category</label>
+            {{ form.category|add_class:"form-control" }}
+          </div>
+
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary px-4 rounded-pill">
+              <i class="bi bi-upload me-2"></i>Submit
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}
