@@ -2,7 +2,7 @@ from django.urls import path
 from .views import home_view, article_detail, register_view, login_view, logout_view
 from . import views
 from .views import category_articles_view
-
+from .views import edit_profile
 from .views import (
     home_view, article_detail,
     register_view, login_view, logout_view,
@@ -26,5 +26,7 @@ urlpatterns = [
     path('category/<int:category_id>/', category_articles_view, name='category_articles'),
 
     
-
+    path('author-profile/', views.author_profile, name='author_profile'),
+    path('edit-profile/', views.edit_profile, name='edit_profile'),
 ]
+

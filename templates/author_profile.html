@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Author Profile{% endblock %}
+
+{% block content %}
+<main class="main">
+
+  <!-- Page Title -->
+  <div class="page-title">
+    <div class="breadcrumbs">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bi bi-house"></i> Home</a></li>
+          <li class="breadcrumb-item"><a href="#">Category</a></li>
+          <li class="breadcrumb-item active current">Author Profile</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="title-wrapper">
+      <h1>Author Profile</h1>
+    </div>
+  </div>
+
+  <!-- Author Profile Section -->
+  <section id="author-profile" class="author-profile section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <div class="author-profile-1">
+        <div class="row">
+          <!-- Author Info -->
+          <div class="col-lg-4 mb-4 mb-lg-0">
+            <div class="author-card" data-aos="fade-up">
+              <div class="author-image">
+                {% if user.profile.avatar %}
+                  <img src="{{ user.profile.avatar.url }}" alt="Author" class="img-fluid rounded">
+                {% else %}
+                  <img src="{% static 'img/person/person-m-5.webp' %}" alt="Default Author" class="img-fluid rounded">
+                {% endif %}
+              </div>
+              <div class="author-info">
+                <h3 class="author-name">
+                  {{ profile_user.first_name }} {{ profile_user.last_name }}
+                </h3>
+                <p class="designation">Technology Writer</p>
+                <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary w-100 mt-3">
+                  ✏️ Edit Profile
+                </a>
+                
+                
+                <div class="author-stats d-flex justify-content-between text-center my-4">
+                  <div class="stat-item">
+                    <h4>{{ user.articles.count }}</h4>
+                    <p>Articles</p>
+                  </div>
+                  <div class="stat-item">
+                    <h4>{{ user.profile.awards|default:0 }}</h4>
+                    <p>Awards</p>
+                  </div>
+                  <div class="stat-item">
+                    <h4>{{ user.profile.followers|default:0 }}</h4>
+                    <p>Followers</p>
+                  </div>
+                </div>
+                <div class="author-social-links mt-3">
+                  {% if profile.twitter %}
+                    <a href="{{ profile.twitter }}" class="twitter"><i class="bi bi-twitter-x"></i></a>
+                  {% endif %}
+                  {% if profile.linkedin %}
+                    <a href="{{ profile.linkedin }}" class="linkedin"><i class="bi bi-linkedin"></i></a>
+                  {% endif %}
+                  {% if profile.github %}
+                    <a href="{{ profile.github }}" class="github"><i class="bi bi-github"></i></a>
+                  {% endif %}
+                  {% if profile.facebook %}
+                    <a href="{{ profile.facebook }}" class="facebook"><i class="bi bi-facebook"></i></a>
+                  {% endif %}
+                  {% if profile.instagram %}
+                    <a href="{{ profile.instagram }}" class="instagram"><i class="bi bi-instagram"></i></a>
+                  {% endif %}
+                </div>
+                
+              </div>
+            </div>
+          </div>
+
+          <!-- Author Content -->
+          <div class="col-lg-8">
+            <div class="author-content" data-aos="fade-up" data-aos-delay="200">
+              <div class="content-header">
+                <h3>About Me</h3>
+              </div>
+              
+              <div class="content-body">
+                <div class="about-me-container">
+                  <p id="bioText" class="about-me-text collapsed">
+                    {% if profile.bio %}
+                      {{ profile.bio }}
+                    {% else %}
+                      This user hasn’t written anything about themselves yet.
+                    {% endif %}
+                  </p>
+              
+                  {% if profile.bio %}
+                    <button id="toggleButton" class="btn-show-more" onclick="toggleBio()">Show more</button>
+                  {% endif %}
+                </div>
+              
+                
+                
+                
+                
+                <div class="expertise-areas">
+                  <h4>Areas of Expertise</h4>
+                  <div class="tags">
+                    <span>Artificial Intelligence</span>
+                    <span>Cybersecurity</span>
+                    <span>Smart Home Technology</span>
+                    <span>Digital Privacy</span>
+                    <span>Consumer Electronics</span>
+                    <span>Future Tech Trends</span>
+                  </div>
+                </div>
+
+               
+                    {% for article in articles %}
+                    <div class="featured-articles mt-5">
+                      <h4>My Articles</h4>
+                      <div class="row g-4">
+                        {% for article in articles %}
+                          <div class="col-md-6">
+                            <article class="article-card">
+                              <div class="article-img">
+                                {% if article.image %}
+                                  <img src="{{ article.image.url }}" alt="Article" class="img-fluid">
+                                {% else %}
+                                  <img src="{% static 'img/blog/blog-post-1.webp' %}" alt="Default Article" class="img-fluid">
+                                {% endif %}
+                              </div>
+                              <div class="article-details">
+                                <div class="post-category">{{ article.category.name }}</div>
+                                <h5><a href="{% url 'article_detail' article.id %}">{{ article.title }}</a></h5>
+                                <div class="post-meta">
+                                  <span><i class="bi bi-clock"></i> {{ article.pub_date|date:"M d, Y" }}</span>
+                                </div>
+                                <a href="{% url 'edit_article' article.id %}" class="btn btn-sm btn-outline-secondary mt-2">Edit</a>
+                              </div>
+                            </article>
+                          </div>
+                        {% empty %}
+                          <div class="col-12">
+                            <p class="text-muted">You haven't published any articles yet.</p>
+                          </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                      <article class="article-card">
+                        <div class="article-img">
+                          {% if article.image %}
+                            <img src="{{ article.image.url }}" alt="Article" class="img-fluid">
+                          {% else %}
+                            <img src="{% static 'img/blog/blog-post-1.webp' %}" alt="Default Article" class="img-fluid">
+                          {% endif %}
+                        </div>
+                        <div class="article-details">
+                          <div class="post-category">{{ article.category.name }}</div>
+                          <h5><a href="{% url 'article_detail' article.id %}">{{ article.title }}</a></h5>
+                          <div class="post-meta">
+                            <span><i class="bi bi-clock"></i> {{ article.pub_date|date:"M d, Y" }}</span>
+                          </div>
+                        </div>
+                      </article>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                      <p class="text-muted">You haven't published any articles yet.</p>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+  function toggleBio() {
+    const bioText = document.getElementById("bioText");
+    const toggleButton = document.getElementById("toggleButton");
+
+    if (bioText.classList.contains("collapsed")) {
+      bioText.classList.remove("collapsed");
+      toggleButton.innerText = "Show less";
+    } else {
+      bioText.classList.add("collapsed");
+      toggleButton.innerText = "Show more";
+    }
+  }
+</script>
+
+<style>
+  .about-me-text {
+    font-size: 15px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    text-align: left;
+    margin-top: 5px;         /* небольшой отступ сверху */
+    margin-bottom: 10px;     /* отступ снизу */
+  }
+
+  .about-me-text.collapsed {
+    max-height: 100px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .about-me-container {
+    padding-left: 0;
+    margin-top: 0px;
+    margin-bottom: 20px;
+  }
+
+  .btn-show-more {
+    background: none;
+    border: none;
+    color: #007bff;
+    padding: 0;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+
+  .content-header,
+.about-me-container {
+  text-align: left !important; /* Снимает выравнивание по центру */
+}
+</style>
+
+{% endblock %}

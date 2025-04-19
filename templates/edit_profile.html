@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<main class="main">
+  <div class="page-title">
+    <div class="breadcrumbs">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bi bi-house"></i> Home</a></li>
+          <li class="breadcrumb-item active current">Edit Profile</li>
+        </ol>
+      </nav>
+    </div>
+    <div class="title-wrapper">
+      <h1>Edit Profile</h1>
+    </div>
+  </div>
+
+  <section class="edit-profile section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <form method="post" enctype="multipart/form-data" class="p-4 shadow rounded bg-white">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <div class="text-center mb-4">
+              {% if form.avatar.value %}
+                <img src="{{ form.instance.avatar.url }}" class="rounded-circle" width="100" height="100">
+              {% else %}
+                <img src="{% static 'img/person/person-m-5.webp' %}" class="rounded-circle" width="100" height="100">
+              {% endif %}
+            </div>
+
+            {% for field in form %}
+              <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                  <div class="text-danger small">{{ field.errors|striptags }}</div>
+                {% endif %}
+              </div>
+            {% endfor %}
+
+            <div class="text-end mt-4">
+              <a href="{% url 'author_profile' %}" class="btn btn-outline-secondary">Cancel</a>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

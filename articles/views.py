@@ -1,7 +1,9 @@
 
-from django.shortcuts import render, get_object_or_404, redirect,render
-from .models import Article, Comment,Category
-from .forms import CommentForm,ArticleForm,CustomUserCreationForm
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Article, Comment,Category,Profile
+from .forms import CommentForm,ArticleForm,CustomUserCreationForm,CombinedProfileForm
+
+
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 from django.db.models import Q
@@ -9,7 +11,7 @@ from django.utils.dateparse import parse_date
 from django.db.models.functions import TruncMonth
 from django.db.models import Count
 from datetime import datetime
-
+from django.contrib.auth.decorators import login_required
 
 
 def home_view(request):
@@ -142,3 +144,29 @@ def category_articles_view(request, category_id):
     return render(request, 'category.html', {'category': category, 'articles': articles})
 
 
+@login_required
+def author_profile(request):
+    articles = Article.objects.filter(author=request.user)
+    user = request.user
+    return render(request, 'author_profile.html', {
+        'user': request.user,
+        'categories': Category.objects.all(),
+        'articles': articles,
+        'profile_user': user,
+        'profile': user.profile
+    })
+
+@login_required
+def edit_profile(request):
+    user = request.user
+    profile, created = Profile.objects.get_or_create(user=user)
+
+    if request.method == 'POST':
+        form = CombinedProfileForm(request.POST, request.FILES, instance=profile, user=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('author_profile')
+    else:
+        form = CombinedProfileForm(instance=profile, user=request.user)
+
+    return render(request, 'edit_profile.html', {'form': form})

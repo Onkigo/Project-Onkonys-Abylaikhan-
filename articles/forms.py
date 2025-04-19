@@ -1,7 +1,9 @@
 from django import forms
-from .models import Comment,Article,Category
+from .models import Comment,Article,Category,Profile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
@@ -62,3 +64,56 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+        
+        
+from django import forms
+from django.contrib.auth.models import User
+from .models import Profile
+
+class CombinedProfileForm(forms.ModelForm):
+    first_name = forms.CharField(
+        max_length=30,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    last_name = forms.CharField(
+        max_length=30,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+
+    class Meta:
+        model = Profile
+        fields = ['avatar', 'bio', 'twitter', 'facebook', 'instagram', 'linkedin']
+        widgets = {
+            'bio': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Напишите что-нибудь о себе...'
+            }),
+            'avatar': forms.ClearableFileInput(attrs={
+                'class': 'form-control'
+            }),
+            'twitter': forms.TextInput(attrs={'class': 'form-control'}),
+            'facebook': forms.TextInput(attrs={'class': 'form-control'}),
+            'instagram': forms.TextInput(attrs={'class': 'form-control'}),
+            'linkedin': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields['first_name'].initial = user.first_name
+            self.fields['last_name'].initial = user.last_name
+        self.user = user
+
+    def save(self, commit=True):
+        profile = super().save(commit=False)
+        if commit:
+            profile.save()
+            if self.user:
+                self.user.first_name = self.cleaned_data.get('first_name')
+                self.user.last_name = self.cleaned_data.get('last_name')
+                self.user.save()
+        return profile
