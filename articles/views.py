@@ -22,22 +22,25 @@ def home_view(request):
     query = request.GET.get('q')
     category = request.GET.get('category')
     date = request.GET.get('date')
-
+    sort_option = request.GET.get('sort', '')
     # Фильтрация по запросу (по заголовку или контенту)
     if query:
         articles = articles.filter(
             Q(title__icontains=query) |
             Q(content__icontains=query)
         )
-
+    if sort_option == 'newest':
+        articles = articles.order_by('-pub_date')
+    elif sort_option == 'oldest':
+        articles = articles.order_by('pub_date')
     # Фильтрация по категории
     if category:
-        articles = articles.filter(category__name=category)
+        articles = articles.filter(category__id=category)
 
     # Фильтрация по дате (по месяцу и году)
     if date:
-        year, month = date.split('-')
-        articles = articles.filter(pub_date__year=year, pub_date__month=month)
+        year, month, day = date.split('-')
+        articles = articles.filter(pub_date__year=year, pub_date__month=month, pub_date__day=day)
 
     # Для отображения всех категорий в форме фильтрации
     categories = Category.objects.all()
@@ -91,7 +94,8 @@ def article_detail(request, id):
     return render(request, 'article_detail.html', {
         'article': article,
         'form': form,
-        'comments': comments  # ← передаём комментарии в шаблон
+        'comments': comments,  # ← передаём комментарии в шаблон
+        'author_profile': article.author.profile
     })
 
     
@@ -170,3 +174,13 @@ def edit_profile(request):
         form = CombinedProfileForm(instance=profile, user=request.user)
 
     return render(request, 'edit_profile.html', {'form': form})
+
+
+def view_profile(request, user_id):
+    user = get_object_or_404(user, id=user_id)
+    articles = Article.objects.filter(author=user)
+    return render(request, 'view_profile.html', {
+        'profile_user': user,
+        'profile': user.profile,
+        'articles': articles,
+    })

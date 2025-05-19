@@ -22,7 +22,7 @@ class Profile(models.Model):
     facebook = models.URLField(blank=True, null=True)
     instagram = models.URLField(blank=True, null=True)
     linkedin = models.URLField(blank=True, null=True)
-
+    expertise = models.CharField(max_length=100, blank=True, null=True)
     def __str__(self):
         return f"{self.user.username}'s profile"
     

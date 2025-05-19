@@ -9,25 +9,6 @@
       <a class="logo d-flex align-items-end" href="{% url 'home' %}">
         <h1 class="sitename">Blogy</h1><span>.</span>
       </a>
-      <div class="d-flex align-items-center">
-        <div class="social-links">
-          <a class="facebook" href="#"><i class="bi bi-facebook"></i></a>
-          <a class="twitter" href="#"><i class="bi bi-twitter"></i></a>
-          <a class="instagram" href="#"><i class="bi bi-instagram"></i></a>
-        </div>
-        <form method="get" action="" class="d-flex align-items-center gap-2" style="margin-bottom: 0;">
-          <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Search..." class="form-control" style="width: 200px; border-radius: 0;">
-          <select name="category" class="form-control" style="border-radius: 0; width: 150px;">
-            <option value="">All Categories</option>
-            {% for cat in categories %}
-              <option value="{{ cat.name }}" {% if selected_category == cat.name %}selected{% endif %}>{{ cat.name }}</option>
-            {% endfor %}
-          </select>
-          <input type="month" name="date" value="{{ selected_date }}" class="form-control" style="border-radius: 0; width: 150px;">
-          <button type="submit" class="btn btn-outline-dark" style="border-radius: 0;">Search / Filter</button>
-          <a href="{% url 'home' %}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center" title="Reset filters" style="border-radius: 0; width: 40px; height: 38px;">⟳</a>
-        </form>
-      </div>
     </div>
   </div>
   <div class="nav-wrap">
@@ -44,13 +25,37 @@
             </ul>
           </li>
           <li><a href="{% url 'author_profile' %}">Author Profile</a></li>
-
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
     </div>
   </div>
 </header>
+
+<div class="container my-4">
+  <form method="GET" class="row g-3 align-items-end">
+    <div class="col-md-4">
+      <label for="q" class="form-label">Search</label>
+      <input type="text" name="q" id="q" class="form-control" placeholder="Search..." value="{{ request.GET.q }}">
+    </div>
+    <div class="col-md-4">
+      <label for="category" class="form-label">Category</label>
+      <select name="category" id="category" class="form-select">
+        <option value="">All Categories</option>
+        {% for cat in categories %}
+          <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label for="date" class="form-label">Date</label>
+      <input type="date" name="date" id="date" class="form-control" value="{{ request.GET.date }}">
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+  </form>
+</div>
 
 <main class="main">
   <section class="hero-cards py-5">
@@ -68,14 +73,16 @@
                     <img src="{% static 'img/blog/blog-post-1.webp' %}" alt="default" class="img-fluid w-100">
                   {% endif %}
                   <div class="position-absolute bottom-0 start-0 p-4 text-white bg-dark bg-opacity-50 w-100">
-                    <small><i class="bi bi-calendar3"></i> {{ article.pub_date|date:"M d, Y" }} • {{ article.category.name }}</small>
+                    <div class="badge-group d-flex align-items-center gap-2 mb-2">
+                      <span class="badge bg-light text-dark border"><i class="bi bi-calendar3 me-1"></i>{{ article.pub_date|date:"M d" }}</span>
+                      <span class="badge bg-light text-dark border">{{ article.category.name }}</span>
+                    </div>
                     <h3 class="mb-0">{{ article.title }}</h3>
                   </div>
                 </div>
               </a>
               {% endwith %}
             </div>
-
             <div class="col-lg-4 d-flex flex-column gap-4" data-aos="fade-up" data-aos-delay="100">
               {% for article in hero_articles|slice:"1:3" %}
               <a href="{% url 'article_detail' article.id %}" class="text-white text-decoration-none">
@@ -86,7 +93,10 @@
                     <img src="{% static 'img/blog/blog-post-1.webp' %}" alt="default" class="img-fluid w-100">
                   {% endif %}
                   <div class="position-absolute bottom-0 start-0 p-3 text-white bg-dark bg-opacity-50 w-100">
-                    <small><i class="bi bi-calendar3"></i> {{ article.pub_date|date:"M d, Y" }} • {{ article.category.name }}</small>
+                    <div class="badge-group d-flex align-items-center gap-2 mb-2">
+                      <span class="badge bg-light text-dark border"><i class="bi bi-calendar3 me-1"></i>{{ article.pub_date|date:"M d" }}</span>
+                      <span class="badge bg-light text-dark border">{{ article.category.name }}</span>
+                    </div>
                     <h5 class="mt-1 mb-0">{{ article.title }}</h5>
                   </div>
                 </div>
@@ -114,7 +124,12 @@
               <img src="{% static 'img/blog/blog-post-1.webp' %}" alt="default image" class="img-fluid rounded-3">
             {% endif %}
           </div>
-          <p class="text-muted mb-1">{{ article.category }}</p>
+          <div class="badge-group d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-light text-dark border">
+              <i class="bi bi-calendar3 me-1"></i>{{ article.pub_date|date:"M d" }}
+            </span>
+            <span class="badge bg-light text-dark border">{{ article.category.name }}</span>
+          </div>
           <h4 class="article-title mb-2">
             <a href="{% url 'article_detail' article.id %}" class="text-dark text-decoration-none">{{ article.title }}</a>
           </h4>
@@ -122,7 +137,6 @@
             <img src="{% static 'img/person/person-m-6.webp' %}" class="rounded-circle" width="32" height="32" alt="author">
             <div>
               <p class="mb-0 fw-semibold">{{ article.author.username }}</p>
-              <small class="text-muted">{{ article.pub_date|date:"M d, Y" }}</small>
             </div>
           </div>
         </article>
@@ -148,36 +162,6 @@
           <p><strong>Email:</strong> <span>useblepochta228@mail.r</span></p>
         </div>
       </div>
-      <div class="col-lg-2 col-md-3 footer-links">
-        <h4>Useful Links</h4>
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">About us</a></li>
-          <li><a href="#">Services</a></li>
-          <li><a href="#">Terms of service</a></li>
-          <li><a href="#">Privacy policy</a></li>
-        </ul>
-      </div>
-      <div class="col-lg-2 col-md-3 footer-links">
-        <h4>Our Services</h4>
-        <ul>
-          <li><a href="#">Web Design</a></li>
-          <li><a href="#">Web Development</a></li>
-          <li><a href="#">Product Management</a></li>
-          <li><a href="#">Marketing</a></li>
-          <li><a href="#">Graphic Design</a></li>
-        </ul>
-      </div>
-      <div class="col-lg-2 col-md-3 footer-links">
-        <h4>Hic solutasetp</h4>
-        <ul>
-          <li><a href="#">Molestiae accusamus iure</a></li>
-          <li><a href="#">Excepturi dignissimos</a></li>
-          <li><a href="#">Suscipit distinctio</a></li>
-          <li><a href="#">Dilecta</a></li>
-          <li><a href="#">Sit quas consectetur</a></li>
-        </ul>
-      </div>
     </div>
   </div>
   <div class="container copyright text-center mt-4">
@@ -187,4 +171,5 @@
     </div>
   </div>
 </footer>
+
 {% endblock %}

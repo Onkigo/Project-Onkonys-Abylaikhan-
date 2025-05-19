@@ -84,7 +84,7 @@ class CombinedProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['avatar', 'bio', 'twitter', 'facebook', 'instagram', 'linkedin']
+        fields = ['avatar', 'bio', 'twitter', 'facebook', 'instagram', 'linkedin', 'expertise']
         widgets = {
             'bio': forms.Textarea(attrs={
                 'class': 'form-control',

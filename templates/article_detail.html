@@ -21,7 +21,6 @@
 </div>
 <div class="title-wrapper">
 <h1>Blog Details</h1>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.</p>
 </div>
 </div><!-- End Page Title -->
 <div class="container">
@@ -51,11 +50,7 @@
 <h1 class="title">{{ article.title }}</h1>
 <div class="author-info">
 <div class="author-details">
-<img alt="Author" class="author-img" src="assets/img/person/person-f-8.webp"/>
-<div class="info">
-<h4>Michael Chen</h4>
-<span class="role">Senior Web Developer</span>
-</div>
+
 </div>
 <div class="post-meta"><span class="date"><i class="bi bi-calendar3"></i> {{ article.pub_date|date:"d M Y" }}</span><span class="divider">•</span><span class="comments"><i class="bi bi-person"></i> {{ article.author.username }}</span></div>
 </div>
@@ -88,47 +83,69 @@
 </section><!-- /Blog Details Section -->
 <!-- Blog Author Section -->
 <section class="blog-author section" id="blog-author">
-<div class="container" data-aos="fade-up">
-<div class="author-box">
-<div class="row align-items-center">
-<div class="col-lg-3 col-md-4 text-center">
-<img alt="" class="author-img rounded-circle" loading="lazy" src="assets/img/person/person-f-12.webp"/>
-<div class="author-social-links mt-3">
-<a class="twitter" href="https://twitter.com/#"><i class="bi bi-twitter-x"></i></a>
-<a class="linkedin" href="https://linkedin.com/#"><i class="bi bi-linkedin"></i></a>
-<a class="github" href="https://github.com/#"><i class="bi bi-github"></i></a>
-<a class="facebook" href="https://facebook.com/#"><i class="bi bi-facebook"></i></a>
-<a class="instagram" href="https://instagram.com/#"><i class="bi bi-instagram"></i></a>
-</div>
-</div>
-<div class="col-lg-9 col-md-8">
-<div class="author-content">
-<h3 class="author-name">Sarah Anderson</h3>
-<span class="author-title">Senior Tech Writer &amp; Developer Advocate</span>
-<div class="author-bio mt-3">
-                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium. Passionate about creating content that bridges the gap between developers and end-users.
-                      </div>
-<div class="author-website mt-3">
-<a class="website-link" href="#">
-<i class="bi bi-globe"></i>
-<span>sarahanderson.dev</span>
-</a>
-<a class="more-posts" href="#">
-                          Read More from Sarah <i class="bi bi-arrow-right"></i>
-</a>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section><!-- /Blog Author Section -->
+  <div class="container" data-aos="fade-up">
+    <div class="author-box">
+      <div class="row align-items-center">
+        <div class="col-lg-3 col-md-4 text-center">
+          {% if author_profile.avatar %}
+            <img src="{{ author_profile.avatar.url }}" class="author-img rounded-circle" alt="Author" loading="lazy">
+          {% else %}
+            <img src="{% static 'img/person/person-m-5.webp' %}" class="author-img rounded-circle" alt="Default Author" loading="lazy">
+          {% endif %}
+
+          <div class="author-social-links mt-3">
+            {% if author_profile.twitter %}
+              <a href="{{ author_profile.twitter }}"><i class="bi bi-twitter-x"></i></a>
+            {% endif %}
+            {% if author_profile.linkedin %}
+              <a href="{{ author_profile.linkedin }}"><i class="bi bi-linkedin"></i></a>
+            {% endif %}
+            {% if author_profile.github %}
+              <a href="{{ author_profile.github }}"><i class="bi bi-github"></i></a>
+            {% endif %}
+            {% if author_profile.facebook %}
+              <a href="{{ author_profile.facebook }}"><i class="bi bi-facebook"></i></a>
+            {% endif %}
+            {% if author_profile.instagram %}
+              <a href="{{ author_profile.instagram }}"><i class="bi bi-instagram"></i></a>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="col-lg-9 col-md-8">
+          <div class="author-content">
+            <h3 class="author-name">
+              {% if article.author.first_name or article.author.last_name %}
+                {{ article.author.first_name }} {{ article.author.last_name }}
+              {% else %}
+                {{ article.author.username }}
+              {% endif %}
+            </h3>
+            <span class="author-title">Author of the article</span>
+
+            <div class="author-bio mt-3">
+              {{ author_profile.bio|default:"This user hasn’t written anything about themselves yet." }}
+            </div>
+
+            <div class="author-website mt-3">
+              <a href="{% url 'author_profile' %}" class="more-posts">
+                View Full Profile <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 <!-- Blog Comments Section -->
 <section class="blog-comments section" id="blog-comments">
 <div class="container" data-aos="fade-up" data-aos-delay="100">
 <div class="blog-comments-3">
 <div class="section-header">
-<h3>Discussion <span class="comment-count">(8)</span></h3>
+<h3>Discussion <span class="comment-count"></span></h3>
 </div>
 <div class="comments-wrapper">
     {% for comment in comments %}
@@ -167,94 +184,12 @@
 </div>
 <div class="col-lg-4 sidebar">
 <div class="widgets-container" data-aos="fade-up" data-aos-delay="200">
-<!-- Search Widget -->
-<div class="search-widget widget-item">
-<h3 class="widget-title">Search</h3>
-<form action="">
-<input type="text"/>
-<button title="Search" type="submit"><i class="bi bi-search"></i></button>
+
 </form>
-</div><!--/Search Widget -->
-<!-- Categories Widget -->
-<div class="categories-widget widget-item">
-<h3 class="widget-title">Categories</h3>
-<ul class="mt-3">
-<li><a href="#">General <span>(25)</span></a></li>
-<li><a href="#">Lifestyle <span>(12)</span></a></li>
-<li><a href="#">Travel <span>(5)</span></a></li>
-<li><a href="#">Design <span>(22)</span></a></li>
-<li><a href="#">Creative <span>(8)</span></a></li>
-<li><a href="#">Educaion <span>(14)</span></a></li>
-</ul>
-</div><!--/Categories Widget -->
-<!-- Categories Widget -->
-<div class="categories-widget widget-item">
-<h3 class="widget-title">Categories</h3>
-<ul class="mt-3">
-<li><a href="#">General <span>(25)</span></a></li>
-<li><a href="#">Lifestyle <span>(12)</span></a></li>
-<li><a href="#">Travel <span>(5)</span></a></li>
-<li><a href="#">Design <span>(22)</span></a></li>
-<li><a href="#">Creative <span>(8)</span></a></li>
-<li><a href="#">Educaion <span>(14)</span></a></li>
-</ul>
-</div><!--/Categories Widget -->
-<!-- Recent Posts Widget -->
-<div class="recent-posts-widget widget-item">
-<h3 class="widget-title">Recent Posts</h3>
-<div class="post-item">
-<img alt="" class="flex-shrink-0" src="assets/img/blog/blog-post-square-1.webp"/>
-<div>
-<h4><a href="blog-details.html">Nihil blanditiis at in nihil autem</a></h4>
-<time datetime="2020-01-01">Jan 1, 2020</time>
-</div>
-</div><!-- End recent post item-->
-<div class="post-item">
-<img alt="" class="flex-shrink-0" src="assets/img/blog/blog-post-square-2.webp"/>
-<div>
-<h4><a href="blog-details.html">Quidem autem et impedit</a></h4>
-<time datetime="2020-01-01">Jan 1, 2020</time>
-</div>
-</div><!-- End recent post item-->
-<div class="post-item">
-<img alt="" class="flex-shrink-0" src="assets/img/blog/blog-post-square-3.webp"/>
-<div>
-<h4><a href="blog-details.html">Id quia et et ut maxime similique occaecati ut</a></h4>
-<time datetime="2020-01-01">Jan 1, 2020</time>
-</div>
-</div><!-- End recent post item-->
-<div class="post-item">
-<img alt="" class="flex-shrink-0" src="assets/img/blog/blog-post-square-4.webp"/>
-<div>
-<h4><a href="blog-details.html">Laborum corporis quo dara net para</a></h4>
-<time datetime="2020-01-01">Jan 1, 2020</time>
-</div>
-</div><!-- End recent post item-->
-<div class="post-item">
-<img alt="" class="flex-shrink-0" src="assets/img/blog/blog-post-square-5.webp"/>
-<div>
-<h4><a href="blog-details.html">Et dolores corrupti quae illo quod dolor</a></h4>
-<time datetime="2020-01-01">Jan 1, 2020</time>
-</div>
-</div><!-- End recent post item-->
-</div><!--/Recent Posts Widget -->
-<!-- Tags Widget -->
-<div class="tags-widget widget-item">
-<h3 class="widget-title">Tags</h3>
-<ul>
-<li><a href="#">App</a></li>
-<li><a href="#">IT</a></li>
-<li><a href="#">Business</a></li>
-<li><a href="#">Mac</a></li>
-<li><a href="#">Design</a></li>
-<li><a href="#">Office</a></li>
-<li><a href="#">Creative</a></li>
-<li><a href="#">Studio</a></li>
-<li><a href="#">Smart</a></li>
-<li><a href="#">Tips</a></li>
-<li><a href="#">Marketing</a></li>
-</ul>
-</div><!--/Tags Widget -->
+
+
+
+
 </div>
 </div>
 </div>

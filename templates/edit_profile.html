@@ -34,7 +34,14 @@
                 <img src="{% static 'img/person/person-m-5.webp' %}" class="rounded-circle" width="100" height="100">
               {% endif %}
             </div>
-
+            <div class="mb-3">
+              <label for="id_expertise" class="form-label">Your Expertise</label>
+              {{ form.expertise }}
+              {% if form.expertise.errors %}
+                <div class="text-danger small">{{ form.expertise.errors|striptags }}</div>
+              {% endif %}
+            </div>
+            
             {% for field in form %}
               <div class="mb-3">
                 <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>

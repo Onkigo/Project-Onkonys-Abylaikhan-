@@ -11,8 +11,9 @@
     <div class="breadcrumbs">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bi bi-house"></i> Home</a></li>
-          <li class="breadcrumb-item"><a href="#">Category</a></li>
+          <li class="breadcrumb-item">
+          <a href="{% url 'home' %}"><i class="bi bi-house"></i> Home</a>
+          </li>
           <li class="breadcrumb-item active current">Author Profile</li>
         </ol>
       </nav>
@@ -110,74 +111,45 @@
                 
                 
                 
-                <div class="expertise-areas">
-                  <h4>Areas of Expertise</h4>
-                  <div class="tags">
-                    <span>Artificial Intelligence</span>
-                    <span>Cybersecurity</span>
-                    <span>Smart Home Technology</span>
-                    <span>Digital Privacy</span>
-                    <span>Consumer Electronics</span>
-                    <span>Future Tech Trends</span>
+                {% if profile.expertise %}
+                  <div class="expertise-section mt-3">
+                    <h4>Field of Expertise:</h4>
+                    <p>{{ profile.expertise }}</p>
                   </div>
-                </div>
+                {% endif %}
 
                
+                <div class="featured-articles mt-5">
+                  <h4>My Articles</h4>
+                  <div class="row g-4">
                     {% for article in articles %}
-                    <div class="featured-articles mt-5">
-                      <h4>My Articles</h4>
-                      <div class="row g-4">
-                        {% for article in articles %}
-                          <div class="col-md-6">
-                            <article class="article-card">
-                              <div class="article-img">
-                                {% if article.image %}
-                                  <img src="{{ article.image.url }}" alt="Article" class="img-fluid">
-                                {% else %}
-                                  <img src="{% static 'img/blog/blog-post-1.webp' %}" alt="Default Article" class="img-fluid">
-                                {% endif %}
-                              </div>
-                              <div class="article-details">
-                                <div class="post-category">{{ article.category.name }}</div>
-                                <h5><a href="{% url 'article_detail' article.id %}">{{ article.title }}</a></h5>
-                                <div class="post-meta">
-                                  <span><i class="bi bi-clock"></i> {{ article.pub_date|date:"M d, Y" }}</span>
-                                </div>
-                                <a href="{% url 'edit_article' article.id %}" class="btn btn-sm btn-outline-secondary mt-2">Edit</a>
-                              </div>
-                            </article>
+                      <div class="col-md-6">
+                        <article class="article-card">
+                          <div class="article-img">
+                            {% if article.image %}
+                              <img src="{{ article.image.url }}" alt="Article" class="img-fluid">
+                            {% else %}
+                              <img src="{% static 'img/blog/blog-post-1.webp' %}" alt="Default Article" class="img-fluid">
+                            {% endif %}
                           </div>
-                        {% empty %}
-                          <div class="col-12">
-                            <p class="text-muted">You haven't published any articles yet.</p>
+                          <div class="article-details">
+                            <div class="post-category">{{ article.category.name }}</div>
+                            <h5><a href="{% url 'article_detail' article.id %}">{{ article.title }}</a></h5>
+                            <div class="post-meta">
+                              <span><i class="bi bi-clock"></i> {{ article.pub_date|date:"M d, Y" }}</span>
+                            </div>
+                            <a href="{% url 'edit_article' article.id %}" class="btn btn-sm btn-outline-secondary mt-2">Edit</a>
                           </div>
-                        {% endfor %}
+                        </article>
                       </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                      <article class="article-card">
-                        <div class="article-img">
-                          {% if article.image %}
-                            <img src="{{ article.image.url }}" alt="Article" class="img-fluid">
-                          {% else %}
-                            <img src="{% static 'img/blog/blog-post-1.webp' %}" alt="Default Article" class="img-fluid">
-                          {% endif %}
-                        </div>
-                        <div class="article-details">
-                          <div class="post-category">{{ article.category.name }}</div>
-                          <h5><a href="{% url 'article_detail' article.id %}">{{ article.title }}</a></h5>
-                          <div class="post-meta">
-                            <span><i class="bi bi-clock"></i> {{ article.pub_date|date:"M d, Y" }}</span>
-                          </div>
-                        </div>
-                      </article>
-                    </div>
                     {% empty %}
-                    <div class="col-12">
-                      <p class="text-muted">You haven't published any articles yet.</p>
-                    </div>
+                      <div class="col-12">
+                        <p class="text-muted">You haven't published any articles yet.</p>
+                      </div>
                     {% endfor %}
+                  </div>
+                </div>
+                
                   </div>
                 </div>
 
